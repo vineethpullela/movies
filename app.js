@@ -37,10 +37,10 @@ app.get("/movies/", async (request, response) => {
 app.post("/movies/", async (request, response) => {
   const { movieId } = request.params;
   const movieDetails = request.body;
-  const { directorId, movieName, leadeActor } = movieDetails;
+  const { directorId, movieName, leadActor } = movieDetails;
   const postNewMovieQuery = `
   insert into movie (director_id,movie_name,lead_actor) 
-  Values(${directorId},${movieName},${leadeActor};`;
+  Values(${directorId},${movieName},${leadActor};`;
   await db.run(postNewMovieQuery);
   response.send("Movie Successfully Added");
 });
