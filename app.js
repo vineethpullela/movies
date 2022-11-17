@@ -13,7 +13,7 @@ const connectDbAndServer = async () => {
       filename: dbPath,
       driver: sqlite3.Database,
     });
-    app.listen(3002, () => {
+    module.exports = app.listen(3002, () => {
       console.log("Server is running at http://localhost:3002");
     });
   } catch (e) {
@@ -21,6 +21,7 @@ const connectDbAndServer = async () => {
     process.exit(1);
   }
 };
+module.exports = app;
 connectDbAndServer();
 
 //API 1
@@ -52,7 +53,7 @@ app.post("/movies/", async (request, response) => {
   response.send("Movie Successfully Added");
 });
 
-//API 3git
+//API 3
 
 app.get("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
@@ -63,8 +64,17 @@ app.get("/movies/:movieId/", async (request, response) => {
         movie
     WHERE
         movie_id = ${movieId};`;
-  const movie = await db.get(getMovieQuery);
-  response.send(movie);
+  const movieObj = await db.get(getMovieQuery);
+  const responseMovieObj = movieObj.map((movie) => {
+    return {
+      movieId: movie.movie_id,
+      directorId: movie.director_id,
+      movieName: movie.movie_name,
+      leadActor: movie.lead_actor,
+    };
+  });
+
+  response.send(responseMovieObj);
 });
 
 //API 4
