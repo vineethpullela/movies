@@ -29,8 +29,13 @@ app.get("/movies/", async (request, response) => {
     select movie_name as movieName from movie;`;
 
   const movieArray = await db.all(getAllMovieNames);
+  const movieDatabase = movieArray.map((movie) => {
+    return {
+      movieName: movie.movieName,
+    };
+  });
 
-  response.send(movieArray);
+  response.send(movieDatabase);
 });
 
 //API 2
@@ -51,7 +56,7 @@ app.post("/movies/", async (request, response) => {
 
 app.get("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
-  const getMovieQuery = `select * from movie where movie_id=${movieId}`;
+  const getMovieQuery = `select * from movie where movie_id=${movieId};`;
   const movie = await db.get(getMovieQuery);
   response.send(movie);
 });
