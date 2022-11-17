@@ -59,9 +59,9 @@ app.get("/movies/:movieId/", async (request, response) => {
   const getMovieQuery = `
     SELECT
         *
-    FROM 
-        movie 
-    WHERE 
+    FROM
+        movie
+    WHERE
         movie_id = ${movieId};`;
   const movie = await db.get(getMovieQuery);
   response.send(movie);
@@ -73,8 +73,8 @@ app.put("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
   const movieDetails = request.body;
   const { directorId, movieName, leadActor } = movieDetails;
-  const postMovieQuery = `update movie set director_id = ${directorId},movie_name='${movieName}', lead_actor = '${leadActor}' where movie_id = ${movieId};`;
-  await db.run(postMovieQuery);
+  const updateMovieQuery = `UPDATE movie SET director_id = ${directorId},movie_name='${movieName}', lead_actor = '${leadActor}' WHERE movie_id = ${movieId};`;
+  await db.run(updateMovieQuery);
   response.send("Movie Details Updated");
 });
 
@@ -110,8 +110,13 @@ app.get("/directors/", async (request, response) => {
 app.get("/directors/:directorId/movies/", async (request, response) => {
   const { directorId } = request.params;
   const getDirectorMoviesQuery = `
-    select movie_name from movie inner join director on movie.director_id=director.director_id where director_id = ${directorId};`;
+    SELECT movie_name FROM movie WHERE director_id = ${directorId};`;
 
   const movieArray = await db.all(getDirectorMoviesQuery);
-  response.send(movieArray);
+  const directorMoviesArray = movieArray.map((movie) => {
+    return {
+      movieName: movie.movie_name,
+    };
+  });
+  response.send(directorMoviesArray);
 });
