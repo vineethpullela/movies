@@ -56,7 +56,13 @@ app.post("/movies/", async (request, response) => {
 
 app.get("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
-  const getMovieQuery = `select * from movie where movie_id=${movieId};`;
+  const getMovieQuery = `
+    SELECT
+        *
+    FROM 
+        movie 
+    WHERE 
+        movie_id = ${movieId};`;
   const movie = await db.get(getMovieQuery);
   response.send(movie);
 });
@@ -89,8 +95,14 @@ app.get("/directors/", async (request, response) => {
     select * from director;`;
 
   const directorsArray = await db.all(getAllDirectors);
+  const responseArray = directorsArray.map((director) => {
+    return {
+      directorId: director.director_id,
+      directorName: director.director_name,
+    };
+  });
 
-  response.send(directorsArray);
+  response.send(responseArray);
 });
 
 //API 7
@@ -98,7 +110,7 @@ app.get("/directors/", async (request, response) => {
 app.get("/directors/:directorId/movies/", async (request, response) => {
   const { directorId } = request.params;
   const getDirectorMoviesQuery = `
-    select movie_name from movie inner join director on movie.director_id=director.director_id where director_id=${directorId};`;
+    select movie_name from movie inner join director on movie.director_id=director.director_id where director_id = ${directorId};`;
 
   const movieArray = await db.all(getDirectorMoviesQuery);
   response.send(movieArray);
