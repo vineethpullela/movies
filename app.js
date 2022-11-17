@@ -52,7 +52,7 @@ app.post("/movies/", async (request, response) => {
   response.send("Movie Successfully Added");
 });
 
-//API 3
+//API 3git
 
 app.get("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
