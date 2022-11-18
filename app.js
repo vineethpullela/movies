@@ -13,7 +13,7 @@ const connectDbAndServer = async () => {
       filename: dbPath,
       driver: sqlite3.Database,
     });
-    module.exports = app.listen(3002, () => {
+    /* module.exports = */ app.listen(3002, () => {
       console.log("Server is running at http://localhost:3002");
     });
   } catch (e) {
@@ -21,7 +21,7 @@ const connectDbAndServer = async () => {
     process.exit(1);
   }
 };
-module.exports = app;
+//module.exports = app;
 connectDbAndServer();
 
 //API 1
@@ -59,22 +59,20 @@ app.get("/movies/:movieId/", async (request, response) => {
   const { movieId } = request.params;
   const getMovieQuery = `
     SELECT
-        *
+        movie_id,director_id,movie_name,lead_actor
     FROM
         movie
     WHERE
         movie_id = ${movieId};`;
-  const movieObj = await db.get(getMovieQuery);
-  const responseMovieObj = movieObj.map((movie) => {
-    return {
+  const movie = await db.get(getMovieQuery);
+  /*const responseMovieObj = (movie) => {
       movieId: movie.movie_id,
-      directorId: movie.director_id,
-      movieName: movie.movie_name,
-      leadActor: movie.lead_actor,
-    };
-  });
+      directorId : movie.director_id,
+      movieName : movie.movie_name,
+      leadActor : movie.lead_actor,
+  };*/
 
-  response.send(responseMovieObj);
+  response.send(movie);
 });
 
 //API 4
